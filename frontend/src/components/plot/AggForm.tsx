@@ -4,6 +4,7 @@ import { Formik } from "formik";
 import {
 	Button,
 	FormControl,
+	FormHelperText,
 	InputLabel,
 	MenuItem,
 	Select,
@@ -42,6 +43,19 @@ const AggForm = (props: AggFormProps) => {
 				column: "",
 				operation: "max",
 			}}
+			validate={(values) => {
+				const errors: any = {};
+				if (!values.selectedfile) {
+					errors.selectedfile = "File is required";
+				}
+				if (!values.column) {
+					errors.column = "Column name is required";
+				}
+				if (!values.operation) {
+					errors.operation = "Operation is required";
+				}
+				return errors;
+			}}
 			onSubmit={(values, actions) => {
 				const data = {
 					column: values.column,
@@ -57,18 +71,20 @@ const AggForm = (props: AggFormProps) => {
 						if (res.status === 200) {
 							props.setComputeResult(res.data.result);
 						}
+						actions.setSubmitting(false);
 					})
 					.catch((error) => {
 						console.log(error, "error");
 						if (error.response.status === 400) {
 							actions.setErrors(error.response.data);
 						}
+						actions.setSubmitting(false);
 					});
 			}}
 		>
 			{(formik_props) => (
 				<form onSubmit={formik_props.handleSubmit}>
-					<Stack direction="row" gap={2} alignItems={"center"}>
+					<Stack direction="row" gap={2} alignItems={"flex-start"}>
 						<FormControl size={"small"} sx={{ width: "200px" }}>
 							<InputLabel>File</InputLabel>
 							<Select
@@ -89,6 +105,19 @@ const AggForm = (props: AggFormProps) => {
 									</MenuItem>
 								))}
 							</Select>
+							{formik_props.touched.selectedfile &&
+								Boolean(formik_props.errors.selectedfile) && (
+									<FormHelperText
+										error={
+											formik_props.touched.selectedfile &&
+											Boolean(
+												formik_props.errors.selectedfile
+											)
+										}
+									>
+										{formik_props.errors.selectedfile}
+									</FormHelperText>
+								)}
 						</FormControl>
 						<TextField
 							type={"text"}
@@ -104,7 +133,12 @@ const AggForm = (props: AggFormProps) => {
 								formik_props.touched.column &&
 								Boolean(formik_props.errors.column)
 							}
-							helperText={formik_props.errors.column}
+							helperText={
+								formik_props.touched.column &&
+								Boolean(formik_props.errors.column)
+									? formik_props.errors.column
+									: null
+							}
 							sx={{ width: "200px" }}
 						/>
 						<FormControl size={"small"} sx={{ width: "200px" }}>
@@ -128,8 +162,25 @@ const AggForm = (props: AggFormProps) => {
 									</MenuItem>
 								))}
 							</Select>
+							{formik_props.touched.operation &&
+								Boolean(formik_props.errors.operation) && (
+									<FormHelperText
+										error={
+											formik_props.touched.operation &&
+											Boolean(
+												formik_props.errors.operation
+											)
+										}
+									>
+										{formik_props.errors.operation}
+									</FormHelperText>
+								)}
 						</FormControl>
-						<Button variant={"contained"} type="submit">
+						<Button
+							variant={"contained"}
+							type="submit"
+							disabled={formik_props.isSubmitting}
+						>
 							Compute
 						</Button>
 					</Stack>

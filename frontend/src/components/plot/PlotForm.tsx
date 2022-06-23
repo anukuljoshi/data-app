@@ -36,17 +36,18 @@ const PlotForm = (props: PlotFormProps) => {
 				if (!values.column2) {
 					errors.column2 = "Column 2 is required";
 				}
+				return errors;
 			}}
 			onSubmit={(values, actions) => {
-				const data = {
-					column1: values.column1,
-					column2: values.column2,
-				};
-
 				axios
-					.post(
+					.get(
 						`${BASE_API_URL}/dataset/${values.selectedfile}/plot/`,
-						data
+						{
+							params: {
+								column1: values.column1,
+								column2: values.column2,
+							},
+						}
 					)
 					.then((res) => {
 						console.log(res);
@@ -54,18 +55,20 @@ const PlotForm = (props: PlotFormProps) => {
 							props.setColumn1(res.data.column1);
 							props.setColumn2(res.data.column2);
 						}
+						actions.setSubmitting(false);
 					})
 					.catch((error) => {
 						console.log(error, "error");
 						if (error.response.status === 400) {
 							actions.setErrors(error.response.data);
 						}
+						actions.setSubmitting(false);
 					});
 			}}
 		>
 			{(formik_props) => (
 				<form onSubmit={formik_props.handleSubmit}>
-					<Stack direction="row" gap={2} alignItems={"center"}>
+					<Stack direction="row" gap={2} alignItems={"flex-start"}>
 						<FormControl size={"small"} sx={{ width: "200px" }}>
 							<InputLabel>File</InputLabel>
 							<Select
@@ -101,7 +104,12 @@ const PlotForm = (props: PlotFormProps) => {
 								formik_props.touched.column1 &&
 								Boolean(formik_props.errors.column1)
 							}
-							helperText={formik_props.errors.column1}
+							helperText={
+								formik_props.touched.column1 &&
+								Boolean(formik_props.errors.column1)
+									? formik_props.errors.column1
+									: null
+							}
 							sx={{ width: "200px" }}
 						/>
 						<TextField
@@ -118,10 +126,19 @@ const PlotForm = (props: PlotFormProps) => {
 								formik_props.touched.column2 &&
 								Boolean(formik_props.errors.column2)
 							}
-							helperText={formik_props.errors.column2}
+							helperText={
+								formik_props.touched.column2 &&
+								Boolean(formik_props.errors.column2)
+									? formik_props.errors.column2
+									: null
+							}
 							sx={{ width: "200px" }}
 						/>
-						<Button variant={"contained"} type="submit">
+						<Button
+							variant={"contained"}
+							type="submit"
+							disabled={formik_props.isSubmitting}
+						>
 							Plot
 						</Button>
 					</Stack>

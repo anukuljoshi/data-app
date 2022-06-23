@@ -57,12 +57,14 @@ const CSVDataForm = () => {
 						console.log(res, "success");
 						queryClient.fetchQuery("csvDataList");
 						actions.resetForm();
+						actions.setSubmitting(false);
 					})
 					.catch((error) => {
 						console.log(error, "error");
 						if (error.response.status === 400) {
 							actions.setErrors(error.response.data);
 						}
+						actions.setSubmitting(false);
 					});
 
 				actions.setSubmitting(true);
@@ -134,11 +136,20 @@ const CSVDataForm = () => {
 								formik_props.touched.name &&
 								Boolean(formik_props.errors.name)
 							}
-							helperText={formik_props.errors.name}
+							helperText={
+								formik_props.touched.name &&
+								Boolean(formik_props.errors.name)
+									? formik_props.errors.name
+									: null
+							}
 							fullWidth
 						/>
 						<Box>
-							<Button variant={"contained"} type="submit">
+							<Button
+								variant={"contained"}
+								type="submit"
+								disabled={formik_props.isSubmitting}
+							>
 								Upload
 							</Button>
 						</Box>

@@ -80,12 +80,12 @@ def get_compute_result(request, *args, **kwargs):
     return Response({"result": result}, status=status.HTTP_200_OK)
 
 
-@api_view(["POST"])
+@api_view(["GET"])
 def get_plot_data(request, *args, **kwargs):
     # get data from request
     csvId = kwargs.get("csvId")
-    column1 = request.data.get("column1")
-    column2 = request.data.get("column2")
+    column1 = request.GET.get("column1")
+    column2 = request.GET.get("column2")
 
     # get csv data with csvId
     csv_data = CSVData.objects.filter(id=csvId).first()
@@ -106,6 +106,13 @@ def get_plot_data(request, *args, **kwargs):
 
     csv_reader = csv.DictReader(csv_file, skipinitialspace=True)
 
+    if(column1 not in csv_reader.fieldnames and column2 not in csv_reader.fieldnames):
+        return Response({"column1": "column1 is invalid", "column2": "column2 is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+    if(column1 not in csv_reader.fieldnames):
+        return Response({"column1": "column1 is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+    if(column2 not in csv_reader.fieldnames):
+        return Response({"column2": "column2 is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
     # get data for column1 and column2
     column1_data = []
     column2_data = []
@@ -118,6 +125,6 @@ def get_plot_data(request, *args, **kwargs):
             column2_data.append(line.get(column2))
             i += 1
     except TypeError:
-        return Response({"column": "column is invalid"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"column1": "column1 or column2 is invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
     return Response({"column1": column1_data, "column2": column2_data}, status=status.HTTP_200_OK)
