@@ -14,4 +14,6 @@ A web app to upload CSV files and compute functions and plot graph with data in 
     2. activate virtual environment with `source ./env/bin/activate`
     3. run `pip install -r requirements.txt` to install dependencies
     4. create a .env file with a key DATABASE_URI=< your_postgres_db_uri >
-    5. run server with `python manage.py runserver` (available on [localhost:8000](http://localhost:8000))
+    5. make migrations for django app `python manage.py makemigrations`
+    6. run migrations `python manage.py migrate`
+    7. run server with `python manage.py runserver` (available on [localhost:8000](http://localhost:8000))
