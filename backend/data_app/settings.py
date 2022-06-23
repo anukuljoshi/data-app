@@ -32,6 +32,9 @@ INSTALLED_APPS = [
     # installed
     'rest_framework',
     'corsheaders',
+
+    # created
+    'csv_files',
 ]
 
 MIDDLEWARE = [

@@ -1,15 +1,45 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+
+import { BrowserRouter } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+import { createTheme, ThemeProvider } from "@mui/material";
+
 import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+
+const queryClient = new QueryClient();
+
+const theme = createTheme({
+	typography: {
+		fontFamily: [
+			"Poppins",
+			'"Helvetica Neue"',
+			'"Segoe UI"',
+			"Roboto",
+			"Arial",
+			"sans-serif",
+			'"Apple Color Emoji"',
+			'"Segoe UI Emoji"',
+			'"Segoe UI Symbol"',
+		].join(","),
+	},
+});
 
 const root = ReactDOM.createRoot(
 	document.getElementById("root") as HTMLElement
 );
 root.render(
 	<React.StrictMode>
-		<App />
+		<QueryClientProvider client={queryClient}>
+			<BrowserRouter>
+				<ThemeProvider theme={theme}>
+					<App />
+				</ThemeProvider>
+			</BrowserRouter>
+		</QueryClientProvider>
 	</React.StrictMode>
 );
 

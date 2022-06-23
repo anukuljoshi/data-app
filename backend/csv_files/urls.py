@@ -3,6 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.get_data_list),
-    path("add-csv/", views.add_csv_file),
+    path("dataset/", views.csv_file_handle_view),
+    path("dataset/<str:csvId>/compute/", views.get_compute_result),
+    path("dataset/<str:csvId>/plot/", views.get_plot_data),
 ]
