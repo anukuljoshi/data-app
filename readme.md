@@ -11,7 +11,7 @@ A web app to upload CSV files and compute functions and plot graph with data in 
     3. run `npm run build` to build a production server
 3. Backend (inside backend folder)
     1. run `python3 -m venv env` to create a virtual environment for the django app
-    2. run `pip install -r requirements.txt` to install dependencies
-    3. create a .env file with a key DATABASE_URI=< your_postgres_db_uri >
-    4. activate virtual environment with `./env/bin/activate`
+    2. activate virtual environment with `./env/bin/activate`
+    3. run `pip install -r requirements.txt` to install dependencies
+    4. create a .env file with a key DATABASE_URI=< your_postgres_db_uri >
     5. run server with `python manage.py runserver` (available on [localhost:8000](http://localhost:8000))
